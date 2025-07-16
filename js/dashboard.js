@@ -556,15 +556,23 @@ class DashboardManager {
         }
     }
 
-    renderCandidatesView(container) {
+    async renderCandidatesView(container) {
         container.innerHTML = `
             <div class="dashboard-header">
                 <h1 class="dashboard-title">Candidatos</h1>
                 <p class="dashboard-subtitle">Gerencie candidatos que se aplicaram às suas vagas</p>
             </div>
-
+            
             <div class="candidates-container">
                 <div class="candidates-filters">
+                    <input type="text" id="candidate-search" placeholder="Buscar candidatos..." class="form-control">
+                    <select id="candidate-status-filter">
+                        <option value="">Todos os status</option>
+                        <option value="resume_analysis">Análise de currículo</option>
+                        <option value="technical_test">Teste técnico</option>
+                        <option value="interview">Entrevista</option>
+                        <option value="hired">Contratado</option>
+                    </select>
                     <div class="search-box">
                         <input type="text" id="candidates-search" placeholder="Buscar candidatos..." onkeyup="window.dashboardManager.filterCandidates()">
                         <span class="search-icon">🔍</span>
