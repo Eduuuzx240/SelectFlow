@@ -98,7 +98,8 @@ class DashboardManager {
             <nav class="sidebar-nav">
                 ${navigation.map(item => `
                     <button class="nav-item ${userTypeClass} ${item.id === this.activeTab ? 'active' : ''}" 
-                            onclick="window.dashboardManager.setActiveTab('${item.id}')">
+                            data-tab="${item.id}"
+                            onclick="event.preventDefault(); window.dashboardManager.setActiveTab('${item.id}')">
                         <span class="nav-icon">${item.icon}</span>
                         <span>${item.label}</span>
                     </button>
@@ -129,21 +130,32 @@ class DashboardManager {
                 break;
         }
         
-        this.renderContent();
         
         // Update active nav item
         const navItems = document.querySelectorAll('.nav-item');
         navItems.forEach(item => {
             item.classList.remove('active');
-            if (item.onclick.toString().includes(`'${tab}'`)) {
+            // Check if this nav item corresponds to the current tab
+            const itemText = item.textContent.toLowerCase().trim();
+            if ((tab === 'dashboard' && itemText === 'dashboard') ||
+                (tab === 'jobs' && itemText === 'vagas') ||
+                (tab === 'candidates' && itemText === 'candidatos') ||
+                (tab === 'applications' && itemText === 'candidaturas') ||
+                (tab === 'profile' && itemText === 'perfil')) {
                 item.classList.add('active');
             }
         });
+        
+        // Render content after updating navigation
+        this.renderContent();
     }
 
     renderContent() {
         const mainContent = document.getElementById('main-content');
         const user = window.authManager.currentUser;
+
+        // Clear previous content
+        mainContent.innerHTML = '';
 
         switch (this.activeTab) {
             case 'dashboard':
@@ -162,6 +174,7 @@ class DashboardManager {
                 this.renderProfileView(mainContent, user);
                 break;
             default:
+                console.log('Unknown tab:', this.activeTab);
                 this.renderDashboardHome(mainContent, user);
         }
     }
